@@ -1,0 +1,61 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+}
+
+body {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #eee
+}
+
+table {
+    width: 100%;
+}
+#controls {
+    margin: 20px 0;
+}
+#skylink {
+    font-size: 20px;
+    padding: 20px;
+    width: 78%;
+}
+#race, #reset {
+    border: none;
+    font-size: 20px;
+    padding: 20px;
+    width: 10%;
+}
+#timer {
+    text-align: right;
+    font-size: 62px;
+    margin-bottom: 20px;
+    padding-right: 5px;
+}
+
+.lap {
+    display: block;
+    width: 100%;
+    border: 1px solid darkgray;
+    padding: 20px 0;
+    font-size: 36px;
+    text-align: center;
+}
+
+.lap-name {
+    width: 80%;
+    text-align: center
+}
+
+.lap-pos {
+    width: 10%;
+    padding-left: 20px;
+}
+
+.lap-ttfb {
+    width: 10%;
+    padding-right: 20px;
+}
