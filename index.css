@@ -35,7 +35,9 @@ table {
     margin-bottom: 20px;
     padding-right: 5px;
 }
-
+.lap .failed {
+    border: 1px solid red;
+}
 .lap {
     display: block;
     width: 100%;

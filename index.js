@@ -8,8 +8,10 @@ const defaultPortals = [
     'https://skydrain.net/'
 ]
 
+const protocol = "sia"
+const protocolPrefix = `${protocol}://`
+
 const enabledPortals = {}
-let skylink = "";
 
 let running = 0;
 let ms = 0;
@@ -24,24 +26,28 @@ let finished = 0;
 let racing = 0;
 
 onClickRace = (evt) => {
-    runid = new Date().getTime()
-    document.getElementById("race").disabled = true
-    document.getElementById("reset").disabled = false
-
-    skylink = document.getElementById("skylink").value
-    skylink = stripPrefix(skylink, 'sia://')
-    console.log(`Racing ${skylink}`)
+    const skylink = document.getElementById("skylink").value
+    if (!skylink.startsWith(protocolPrefix)) {
+        alert(`That is not a valid skylink, a skylink looks like this: ${protocolPrefix}AABP6CorLeC6Upp-DrtZAlKFla_Ip2qC0PUI_qszy_RaRQ`)
+        return;
+    }
 
     if (running) {
         alert('already running')
         return
     }
     running = true
+    runid = new Date().getTime()
+    document.getElementById("race").disabled = true
+    document.getElementById("reset").disabled = false
+
+    const skylinkStripped = skylink.slice(protocolPrefix.length)
+    console.log(`Racing ${skylinkStripped}`)
 
     interval = setInterval(timer, timeout)
     for (const [portal, enabled] of Object.entries(enabledPortals)) {
         if (enabled) {
-            race(portal)
+            race(portal, skylinkStripped)
         }
     }
 }
@@ -68,22 +74,6 @@ onChangePortal = (cb) => {
         cb.checked = true
         enabledPortals[cb.id] = true
     }
-}
-
-race = (portal) => {
-    const id = runid
-    racing++
-    console.log(`RAcing https://${portal}${skylink}`)
-    fetch(`https://${portal}${skylink}`, {
-        withCredentials: true,
-        mode: 'no-cors'
-    })
-        .then((resp) => {
-            console.log(resp)
-            console.log(resp.status)
-            lap(id, portal)
-        })
-        .catch(fail(portal))
 }
 
 lap = (id, portal) => {
@@ -114,11 +104,54 @@ lap = (id, portal) => {
     }
 }
 
-stripPrefix = (str, prefix) => {
-    if (str.startsWith(prefix)) {
-        return str.slice(prefix.length)
+fail = (id, portal) => {
+    if (id != runid) {
+        return // old run
     }
-    return str
+    finished++
+
+    console.log('FAIL', portal)
+    const lap = document.createElement('tr')
+    lap.className = "lap failed"
+    const pos = document.createElement('td')
+    pos.className = "lap-pos"
+
+    lap.appendChild(pos)
+    const name = document.createElement('td')
+    name.className = "lap-name"
+    name.innerHTML = portal
+    lap.appendChild(name)
+    const ttfb = document.createElement('td')
+    ttfb.className = "lap-ttfb"
+    ttfb.innerHTML = time()
+    lap.appendChild(ttfb)
+
+    document.getElementById("laps").appendChild(lap)
+
+    if (finished == racing) {
+        clearInterval(interval)
+    }
+}
+
+race = (portal, skylink) => {
+    const id = runid
+    const url = `${portal}${skylink}`
+    racing++
+
+
+    console.log(`Racing ${url}`)
+    fetch(url, {
+        withCredentials: true,
+        mode: 'no-cors'
+    })
+        .then((resp) => {
+            console.log(resp)
+            console.log(resp.status)
+            lap(id, portal)
+        })
+        .catch(() => {
+            fail(id, portal)
+        })
 }
 
 time = () => {
@@ -145,13 +178,12 @@ timer = () => {
 initUI = () => {
     let html = ''
     for (const portal of defaultPortals) {
-        const name = stripPrefix(portal, "https://")
         html += `
-        <input type="checkbox" id="${name}" name="${name}" value="${portal}" checked onchange="onChangePortal(this)">
-        <label for="${name}">${name}</label>
+        <input type="checkbox" id="${portal}" name="${portal}" value="${portal}" checked onchange="onChangePortal(this)">
+        <label for="${portal}">${portal}</label>
         <br>
         `
-        enabledPortals[name] = true
+        enabledPortals[portal] = true
     }
     document.getElementById("portals").innerHTML = html
 }
