@@ -8,9 +8,6 @@ const defaultPortals = [
     'https://skydrain.net/'
 ]
 
-const protocol = "sia"
-const protocolPrefix = `${protocol}://`
-
 const enabledPortals = {}
 
 let running = 0;
@@ -27,8 +24,8 @@ let racing = 0;
 
 onClickRace = (evt) => {
     const skylink = document.getElementById("skylink").value
-    if (!skylink.startsWith(protocolPrefix)) {
-        alert(`That is not a valid skylink, a skylink looks like this: ${protocolPrefix}AABP6CorLeC6Upp-DrtZAlKFla_Ip2qC0PUI_qszy_RaRQ`)
+    if (!skylink.startsWith("sia://")) {
+        alert(`That is not a valid skylink, a skylink looks like this: sia://AABP6CorLeC6Upp-DrtZAlKFla_Ip2qC0PUI_qszy_RaRQ`)
         return;
     }
 
@@ -41,7 +38,7 @@ onClickRace = (evt) => {
     document.getElementById("race").disabled = true
     document.getElementById("reset").disabled = false
 
-    const skylinkStripped = skylink.slice(protocolPrefix.length)
+    const skylinkStripped = skylink.slice("sia://")
     console.log(`Racing ${skylinkStripped}`)
 
     interval = setInterval(timer, timeout)
