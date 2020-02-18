@@ -15,4 +15,4 @@ race app.
 https://siasky.net/CAD7oOVAp5wMY5hx-ksYBijve0JEH91CR6h4Yzay33-Fag
 
 ## Demo video
-https://siasky.net/AAAHNDmL5_QI_iigLqWR1jh9xCG81uDlWexhPqTcyOJT7A
+https://siasky.net/AAAzontCKVVQ_ngzW8ADl6b6p3Uq7aRcP4taIRpbRn5O3Q
